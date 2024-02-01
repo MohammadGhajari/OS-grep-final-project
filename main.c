@@ -8,8 +8,6 @@
 #include <pthread.h>
 #include <time.h>
 
-//comment that
-//sdfsdfj
 
 pthread_mutex_t result_mutex = PTHREAD_MUTEX_INITIALIZER;
 
