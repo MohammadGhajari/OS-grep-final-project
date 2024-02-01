@@ -8,6 +8,8 @@
 #include <pthread.h>
 #include <time.h>
 
+//comment that i add
+
 
 pthread_mutex_t result_mutex = PTHREAD_MUTEX_INITIALIZER;
 
