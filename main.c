@@ -61,8 +61,7 @@ void* search_file(void* args) {
         if (pos != NULL) {
             founded = 1;
             pthread_mutex_lock(&result_mutex);
-            printf("%s:%d:%ld", thread_args->filename, line_number, (long)(pos - line) + 1);
-            //total_matches_found++;
+            printf("%s:%d:%ld  ", thread_args->filename, line_number, (long)(pos - line) + 1);
             pthread_mutex_unlock(&result_mutex);
             matches_in_file++;
         }
@@ -71,11 +70,7 @@ void* search_file(void* args) {
     fclose(file);
 
 
-    long end_time = get_time_ns();
-
-    long duration = end_time - start_time;
-
-    if(founded) printf(" Duration: %ld ns\n", duration);
+    if(founded) printf(" Duration: %ld ns\n", get_time_ns() - start_time);
 
     pthread_exit((void*)(intptr_t)matches_in_file); // Return the number of matches found in this file
 }
@@ -84,6 +79,7 @@ void search_directory(char* path, char* pattern, int pipe_fd) {
     DIR* dir = opendir(path);
 
     if (dir == NULL) {
+
         perror("Error opening directory");
         exit(EXIT_FAILURE);
     }
@@ -162,9 +158,7 @@ int main(int argc, char* argv[]) {
 
     int matches_in_file;
     while (read(pipe_fd[0], &matches_in_file, sizeof(matches_in_file)) > 0) {
-        //printf("%d\n", matches_in_file);
         total_matches_found += matches_in_file; // Accumulate the match counts from child processes
-        //printf("total match:::: %d\n", total_matches_found);
     }
 
     close(pipe_fd[0]); // Close the read end of the pipe
@@ -174,3 +168,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
