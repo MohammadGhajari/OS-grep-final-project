@@ -29,6 +29,10 @@ search.addEventListener('click', function (ev) {
                 message.innerHTML = "There is no such directory";
 
             } else {
+
+                console.log(data.split("\n"));
+
+
                 const totalFiles = (data.match(new RegExp('@', 'g')) || []).length;
                 const totalMathes = (data.match(new RegExp('&', 'g')) || []).length;
 
