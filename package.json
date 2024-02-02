@@ -1,8 +1,8 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "GREP-MTST",
+  "productName": "GREP-MTST",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Multithreaded Text Search Tool (MTST)",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -12,7 +12,7 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": "daenerys",
+  "author": "ail bemanadi, mohammad ghajari",
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^7.2.0",
@@ -27,4 +27,5 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
   }
+  
 }

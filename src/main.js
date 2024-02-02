@@ -11,11 +11,13 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
+    icon: "icon(1).png",
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+    
   });
-
+    mainWindow.setBackgroundColor('#000') 
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -25,7 +27,7 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
