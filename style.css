@@ -85,11 +85,9 @@ section .signin .content {
     align-items: center;
     flex-direction: column;
     gap: 40px;
-    /*background: red;*/
 }
 .signin .prof {
     display: flex;
-    /*gap: 2rem;*/
 }
 .prof span {
     border-radius: 100%;
@@ -104,30 +102,31 @@ section .signin .content {
     background-color: transparent;
 
     text-shadow: 0 0px 25px rgb(255, 0, 0.8);
-    /* Use the animation property to apply the animation */
     animation: heartbeat 1s infinite;
 }
 .prof span:nth-child(2):hover {
-    /*box-shadow: 0 15px 35px rgb(255, 0, 0.2);*/
-    /*background-color: red;*/
     text-shadow: 0 0px 25px rgb(255, 0, 0.8);
 }
 @keyframes heartbeat {
     0% {
-        /* No shadow at the start */
         text-shadow: none;
+        font-size: 400%;
+    }
+    20% {
+        font-size: 450%;
+        text-shadow: 0 0px 25px rgb(255, 0, 0.8);
+    }
+
+    30% {
         font-size: 400%;
     }
     50% {
-        /* Shadow at the middle */
         text-shadow: 0 0px 25px rgb(255, 0, 0.8);
-        font-size: 430%;
+        font-size: 450%;
     }
     100% {
-        /* No shadow at the end */
         text-shadow: none;
         font-size: 400%;
-
     }
 }
 
