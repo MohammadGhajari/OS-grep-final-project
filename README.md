@@ -53,7 +53,8 @@ The **Multithreaded Text Search Tool (MTST)** is a command-line utility inspired
 
 4. Click the "Search" button.
 
-
+## Desktop version
+[Download for Linux](https://github.com/MohammadGhajari/OS-grep-final-project/releases/tag/1.0.0)
 
 ## Notes
 
