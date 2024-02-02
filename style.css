@@ -66,14 +66,15 @@ section .signin {
     width: 500px;
     background: #222;
     z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 40px;
     border-radius: 4px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 9);
     left: 0px;
-
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 5rem;
 }
 
 section .signin .content {
@@ -84,6 +85,59 @@ section .signin .content {
     align-items: center;
     flex-direction: column;
     gap: 40px;
+    /*background: red;*/
+}
+.signin .prof {
+    display: flex;
+    /*gap: 2rem;*/
+}
+.prof span {
+    border-radius: 100%;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 9);
+}
+.prof span:nth-child(2) {
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 15px 35px transparent;
+    background-color: transparent;
+
+    text-shadow: 0 0px 25px rgb(255, 0, 0.8);
+    /* Use the animation property to apply the animation */
+    animation: heartbeat 1s infinite;
+}
+.prof span:nth-child(2):hover {
+    /*box-shadow: 0 15px 35px rgb(255, 0, 0.2);*/
+    /*background-color: red;*/
+    text-shadow: 0 0px 25px rgb(255, 0, 0.8);
+}
+@keyframes heartbeat {
+    0% {
+        /* No shadow at the start */
+        text-shadow: none;
+        font-size: 400%;
+    }
+    50% {
+        /* Shadow at the middle */
+        text-shadow: 0 0px 25px rgb(255, 0, 0.8);
+        font-size: 430%;
+    }
+    100% {
+        /* No shadow at the end */
+        text-shadow: none;
+        font-size: 400%;
+
+    }
+}
+
+
+.prof span:first-child {
+    background: url("99676228(1).jpeg");
+}
+.prof span:last-child {
+    background: url("photo_2024-02-02_12-10-32.jpg");
+    background-position: right;
 }
 
 section .signin .content h1 {

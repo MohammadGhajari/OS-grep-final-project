@@ -1,0 +1,1 @@
+"use strict";const n=require("electron"),i=["pipe"],s=()=>{n.contextBridge.exposeInMainWorld("ipcRenderer",{send:(e,r)=>{i.includes(e)&&n.ipcRenderer.send(e,r)},receive:(e,r)=>{i.includes(e)&&n.ipcRenderer.on(e,(d,...c)=>r(...c))}})};s();
