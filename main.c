@@ -15,14 +15,14 @@ pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
 int* file_count;
 int match_count = 0;
 
-struct ThreadArgs {
+typedef struct{
     char name[250];
     char pattern[250];
-};
+} ThreadArgs;
 
 
 void* search_file(void* args) {
-    struct ThreadArgs* thread_args = (struct ThreadArgs*)args;
+    ThreadArgs* thread_args = (ThreadArgs*)args;
     FILE* file = fopen(thread_args->name, "r");
 
     if (file == NULL) {
@@ -35,8 +35,7 @@ void* search_file(void* args) {
     int matches_word = 0;
 
 
-
-    pthread_t self = pthread_self();
+    pthread_t threadSelf = pthread_self();
 
 
     struct timespec t;
@@ -51,7 +50,7 @@ void* search_file(void* args) {
         if (pos != NULL) {
             is_matched = 1;
             pthread_mutex_lock(&mutex1);
-            printf("%s:%d:%ld ID: %lu", thread_args->name, line_number, (long)(pos - line) + 1, self);
+            printf("%s:%d:%ld ", thread_args->name, line_number, (long)(pos - line) + 1);
             pthread_mutex_unlock(&mutex1);
             matches_word++;
         }
@@ -63,12 +62,33 @@ void* search_file(void* args) {
     clock_gettime(0, &t);
     long end =  t.tv_sec * 1000000000L + t.tv_nsec;
 
-    if(is_matched) printf(" Duration: %ld ns\n", end - start);
+    if(is_matched) printf("ID: %lu Duration: %ld ns\n", threadSelf, end - start);
 
     pthread_exit((void*)(intptr_t)matches_word);
 }
 
-void search_directory(char* path, char* pattern, int pipe_fd) {
+void proccessFile (int pipe_fd, char* path, char* pattern, struct dirent* entry) {
+    pthread_t thread;
+    ThreadArgs* args = (ThreadArgs*)malloc(sizeof(ThreadArgs));
+    snprintf(args->name, sizeof(args->name), "%s/%s", path, entry->d_name);
+    snprintf(args->pattern, sizeof(args->pattern), "%s", pattern);
+
+    if (pthread_create(&thread, NULL, search_file, (void*)args) != 0) {
+        perror("Error creating thread");
+        exit(1);
+    }
+
+    int matches_in_file;
+    pthread_join(thread, (void**)&matches_in_file);
+    free(args);
+    pthread_mutex_lock(&mutex2);
+    (*file_count)++;
+    pthread_mutex_unlock(&mutex2);
+
+    write(pipe_fd, &matches_in_file, sizeof(matches_in_file));
+}
+
+void searchPath(char* path, char* pattern, int pipe_fd) {
     DIR* dir = opendir(path);
 
     if (dir == NULL) {
@@ -93,31 +113,13 @@ void search_directory(char* path, char* pattern, int pipe_fd) {
                 if (child_pid == 0) {
                     char subdir[250];
                     snprintf(subdir, sizeof(subdir), "%s/%s", path, entry->d_name);
-                    search_directory(subdir, pattern, pipe_fd);
+                    searchPath(subdir, pattern, pipe_fd);
                     exit(0);
                 }
 
             }
         } else if (entry->d_type == DT_REG) {
-            pthread_t thread;
-            struct ThreadArgs* args = (struct ThreadArgs*)malloc(sizeof(struct ThreadArgs));
-            snprintf(args->name, sizeof(args->name), "%s/%s", path, entry->d_name);
-            snprintf(args->pattern, sizeof(args->pattern), "%s", pattern);
-
-            if (pthread_create(&thread, NULL, search_file, (void*)args) != 0) {
-                perror("Error creating thread");
-                exit(1);
-            }
-
-            int matches_in_file;
-            pthread_join(thread, (void**)&matches_in_file);
-            free(args);
-            pthread_mutex_lock(&mutex2);
-            (*file_count)++;
-            pthread_mutex_unlock(&mutex2);
-
-            // Send the number of matches found in the file to the parent process via pipe
-            write(pipe_fd, &matches_in_file, sizeof(matches_in_file));
+            proccessFile (pipe_fd, path, pattern, entry);
         }
     }
 
@@ -143,16 +145,16 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    search_directory(path, pattern, pipe_fd[1]);
+    searchPath(path, pattern, pipe_fd[1]);
 
     close(pipe_fd[1]);
 
     int matches_in_file;
     while (read(pipe_fd[0], &matches_in_file, sizeof(matches_in_file)) > 0) {
-        match_count += matches_in_file; // Accumulate the match counts from child processes
+        match_count += matches_in_file;
     }
 
-    close(pipe_fd[0]); // Close the read end of the pipe
+    close(pipe_fd[0]);
 
     printf("Total files searched: %d\n", *file_count);
     printf("Total matches found: %d", match_count);
